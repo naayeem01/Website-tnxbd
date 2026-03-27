@@ -1,4 +1,3 @@
-import React from 'react';
 
 const WhatsAppWidget = () => {
   // Replace with the exact number provided by the user

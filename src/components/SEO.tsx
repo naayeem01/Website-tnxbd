@@ -10,10 +10,15 @@ interface SEOProps {
 }
 
 const SEO: React.FC<SEOProps> = ({ title, description, keywords, name = "TNXBD IT Solution", type = "website" }) => {
+  // Use a tagline version of the description for the browser tab
+  // Extracting only the first sentence and trimming it
+  const tagline = description.split('.')[0].trim();
+  const titleDisplay = `${title} - ${tagline} | ${name}`;
+
   return (
     <Helmet>
       {/* Standard metadata tags */}
-      <title>{title} | TNXBD IT Solution</title>
+      <title key="title">{titleDisplay}</title>
       <meta name='description' content={description} />
       {keywords && <meta name='keywords' content={keywords} />}
       

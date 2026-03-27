@@ -1,7 +1,7 @@
 
 const WhatsAppWidget = () => {
   // Replace with the exact number provided by the user
-  const phoneNumber = "88018844444299";
+  const phoneNumber = "8801884444299";
   const whatsappUrl = `https://wa.me/${phoneNumber}`;
 
   return (

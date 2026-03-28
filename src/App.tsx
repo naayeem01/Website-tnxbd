@@ -11,6 +11,14 @@ import Products from './pages/Products';
 import Clients from './pages/Clients';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Terms from './pages/Terms';
+import Login from './pages/Admin/Login';
+import Dashboard from './pages/Admin/Dashboard';
+import ServicesManager from './pages/Admin/ServicesManager';
+import PortfolioManager from './pages/Admin/PortfolioManager';
+import ProductsManager from './pages/Admin/ProductsManager';
+import BlogManager from './pages/Admin/BlogManager';
+import ClientsManager from './pages/Admin/ClientsManager';
+import ProtectedRoute from './components/Admin/ProtectedRoute';
 
 function App() {
   const { pathname } = useLocation();
@@ -33,6 +41,39 @@ function App() {
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/contact" element={<Contact />} />
+      
+      {/* Admin Routes */}
+      <Route path="/admin/login" element={<Login />} />
+      <Route path="/admin" element={
+        <ProtectedRoute>
+          <Dashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/services" element={
+        <ProtectedRoute>
+          <ServicesManager />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/portfolio" element={
+        <ProtectedRoute>
+          <PortfolioManager />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/products" element={
+        <ProtectedRoute>
+          <ProductsManager />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/blog" element={
+        <ProtectedRoute>
+          <BlogManager />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/clients" element={
+        <ProtectedRoute>
+          <ClientsManager />
+        </ProtectedRoute>
+      } />
     </Routes>
   );
 }

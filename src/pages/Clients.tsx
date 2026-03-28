@@ -1,83 +1,16 @@
 import Layout from '../components/Layout/Layout';
 import SEO from '../components/SEO';
-import ClientCard, { type Client } from '../components/Clients/ClientCard';
+import ClientCard from '../components/Clients/ClientCard';
 import { Users, Search, Filter } from 'lucide-react';
 import { useState } from 'react';
-
-// Mock Client Data
-export const clientsData: Client[] = [
-  {
-    id: 1,
-    name: "John Doe",
-    role: "CEO",
-    company: "TechNova UK",
-    logo: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    avatar: "https://i.pravatar.cc/150?u=client1",
-    testimonial: "TNXBD IT Solution has been a game-changer for our business. Their technical expertise and dedication are unmatched. Highly recommended!",
-    rating: 5,
-    socials: { linkedin: "https://linkedin.com", website: "https://technova.co.uk" }
-  },
-  {
-    id: 2,
-    name: "Sarah Ahmed",
-    role: "Founder",
-    company: "EcoStore BD",
-    logo: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    avatar: "https://i.pravatar.cc/150?u=client2",
-    testimonial: "The mobile app they developed for us has significantly increased our customer engagement. The team is professional and very responsive.",
-    rating: 5,
-    socials: { linkedin: "https://linkedin.com", website: "https://ecostore.com.bd" }
-  },
-  {
-    id: 3,
-    name: "Robert Wilson",
-    role: "Director",
-    company: "Global Logistics",
-    logo: "https://images.unsplash.com/photo-1614850523020-c05b2209c75a?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    avatar: "https://i.pravatar.cc/150?u=client3",
-    testimonial: "Exceptional ERP solution. It streamlined our entire supply chain process. Their post-deployment support is outstanding.",
-    rating: 5,
-    socials: { linkedin: "https://linkedin.com", website: "https://globallogistics.com" }
-  },
-  {
-    id: 4,
-    name: "Emily Chen",
-    role: "Marketing Head",
-    company: "Visionary Group",
-    logo: "https://images.unsplash.com/photo-1627163430034-032240209423?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    avatar: "https://i.pravatar.cc/150?u=client4",
-    testimonial: "Their creative design and web development skills transformed our brand identity. We've seen a 40% increase in lead generation.",
-    rating: 5,
-    socials: { linkedin: "https://linkedin.com", website: "https://visionarygroup.com" }
-  },
-  {
-    id: 5,
-    name: "David Smith",
-    role: "CTO",
-    company: "DataStream USA",
-    logo: "https://images.unsplash.com/photo-1614850523020-c05b2209c75a?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    avatar: "https://i.pravatar.cc/150?u=client5",
-    testimonial: "A truly talented team of engineers. They handled our complex cloud migration with zero downtime. Reliable and cost-effective.",
-    rating: 5,
-    socials: { linkedin: "https://linkedin.com", website: "https://datastream.ai" }
-  },
-  {
-    id: 6,
-    name: "Nabila Tabassum",
-    role: "Principal",
-    company: "Springfield School",
-    logo: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80",
-    avatar: "https://i.pravatar.cc/150?u=client6",
-    testimonial: "The school management system (EduSmart) has made our administrative tasks much easier. Excellent support and regular updates.",
-    rating: 5,
-    socials: { linkedin: "https://linkedin.com", website: "https://springfield.edu.bd" }
-  }
-];
+import { useClients } from '../hooks/useData';
+import LoadingSkeleton from '../components/Common/LoadingSkeleton';
 
 const Clients = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const { data: clients, loading, error } = useClients();
 
-  const filteredClients = clientsData.filter(client => 
+  const filteredClients = clients.filter(client => 
     client.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     client.company.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -126,11 +59,29 @@ const Clients = () => {
           </div>
 
           {/* Client Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredClients.map((client) => (
-              <ClientCard key={client.id} {...client} />
-            ))}
-          </div>
+          {loading ? (
+            <LoadingSkeleton count={6} />
+          ) : error ? (
+            <div className="text-center py-20 bg-rose-50 rounded-[3rem] border border-rose-100">
+              <p className="text-rose-600 font-bold text-xl">Error loading testimonials: {error}</p>
+              <button onClick={() => window.location.reload()} className="mt-4 btn-primary">Try Again</button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredClients.map((client) => (
+                <ClientCard 
+                  key={client.id} 
+                  {...client}
+                  logo={client.logo_url}
+                  avatar={client.avatar_url}
+                  socials={{
+                    linkedin: client.linkedin_url,
+                    website: client.website_url
+                  }}
+                />
+              ))}
+            </div>
+          )}
 
           {filteredClients.length === 0 && (
             <div className="text-center py-20">

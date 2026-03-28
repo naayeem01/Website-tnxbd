@@ -1,19 +1,12 @@
 import Layout from '../components/Layout/Layout';
 import SEO from '../components/SEO';
-import { Layout as LayoutIcon, Globe, Smartphone, Shield, Database, BarChart, Server, Cpu } from 'lucide-react';
 import ServiceCard from '../components/Home/ServiceCard';
+import { useServices } from '../hooks/useData';
+import { getIcon } from '../lib/icons';
+import LoadingSkeleton from '../components/Common/LoadingSkeleton';
 
 const Services = () => {
-  const allServices = [
-    { icon: Globe, title: "Web Development", description: "Modern, responsive, and SEO-optimized websites." },
-    { icon: Smartphone, title: "Mobile Apps", description: "iOS and Android apps with native performance." },
-    { icon: Database, title: "Software Solutions", description: "Custom ERP, CRM, and business automation tools." },
-    { icon: Shield, title: "Cybersecurity", description: "Protecting your data from evolving digital threats." },
-    { icon: Server, title: "Cloud Computing", description: "AWS, Azure, and Google Cloud infrastructure." },
-    { icon: BarChart, title: "Digital Marketing", description: "SEO, SEM, and social media growth strategies." },
-    { icon: Cpu, title: "AI & Machine Learning", description: "Smart solutions to automate complex tasks." },
-    { icon: LayoutIcon, title: "UI/UX Design", description: "User-centric designs that convert and engage." },
-  ];
+  const { data: allServices, loading, error } = useServices();
 
   return (
     <Layout>
@@ -25,7 +18,7 @@ const Services = () => {
       <section className="pt-40 pb-24 bg-bg-secondary">
         <div className="container">
           <div className="max-w-3xl text-center mx-auto" data-aos="fade-up">
-            <h1 className="text-5xl lg:text-6xl font-extrabold mb-8 tracking-tight text-text-primary">Our <span className="text-primary">Expertise</span></h1>
+            <h1 className="text-5xl lg:text-6xl font-extrabold mb-8 tracking-tight text-text-primary uppercase tracking-tighter">Our <span className="text-primary italic">Expertise</span></h1>
             <p className="text-xl text-text-secondary leading-relaxed font-medium">
               We provide end-to-end technology solutions to help your business stay ahead in a competitive market.
             </p>
@@ -35,13 +28,29 @@ const Services = () => {
 
       <section className="section-padding">
         <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {allServices.map((service, index) => (
-              <ServiceCard key={index} {...service} delay={index * 50} />
-            ))}
-          </div>
+          {loading ? (
+            <LoadingSkeleton count={8} />
+          ) : error ? (
+            <div className="text-center py-20 bg-rose-50 rounded-[3rem] border border-rose-100">
+              <p className="text-rose-600 font-bold text-xl">Error loading services: {error}</p>
+              <button onClick={() => window.location.reload()} className="mt-4 btn-primary">Try Again</button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {allServices.map((service, index) => (
+                <ServiceCard 
+                  key={service.id || index} 
+                  icon={getIcon(service.icon_name)}
+                  title={service.title}
+                  description={service.description}
+                  delay={index * 50} 
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
+
 
       {/* Detailed Service Section */}
       <section className="section-padding bg-text-primary text-white overflow-hidden">
